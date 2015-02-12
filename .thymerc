@@ -1,0 +1,64 @@
+# Use with http://hughbien.com/thyme/
+# and https://github.com/dtinth/thyme_osx_ui for the status bar integration
+require 'thyme_osx_ui'
+
+class PomoUI < ThymeOSX::UI
+  attr_accessor :break
+  def initialize
+    super
+    @break = false
+  end
+  def emoji(seconds_left)
+    if seconds_left < 10
+      if seconds_left.odd?
+        "🔴 "
+      else
+        "⚪️ "
+      end
+    elsif @break
+      "🎸 "
+    else
+      "🍅 "
+    end
+  end
+end
+
+# 25 minute pomodori
+set :timer, 25*60
+set :interval, 1
+
+option :D, 'Description desc', 'Run with a custom description' do |desc|
+  @desc = desc
+  run
+end
+
+before do
+  `say ready...set...go &` unless @break
+  $ui = PomoUI.new
+  $ui.break = @break
+  `terminal-notifier -title '🍅 start!' -message '#{@desc}' &` unless @break
+end
+
+tick do |seconds_left|
+  `afplay dev/pomodoro/Pomodoro/sounds/tick.wav &` if @break
+  $ui.tick(seconds_left)
+end
+
+after do |seconds_left|
+  $ui.destroy
+  `echo #{@desc},#{@timer},#{seconds_left},#{Time.now} >> ~/.thyme_log.csv` unless @break
+  if seconds_left == 0 and !@break
+    `say "Har! You rock mighte!" &`
+    `terminal-notifier -title '🎸 Break!'`
+
+    @break = true
+    # 5 minutes of break every 25 minutes
+    @timer_break = 5*@timer/25
+    run(true)
+  elsif @break
+    `say "ready for next one?" &`
+    `terminal-notifier -title 'Ready for next one?🍅 ' `
+  else
+    `say "try again!"`
+  end
+end
