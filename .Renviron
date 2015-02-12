@@ -1,0 +1,2 @@
+# Don't place libraries in the default spot to facilitate R upgrades
+R_LIBS=~/.R/library
