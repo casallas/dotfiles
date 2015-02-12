@@ -1,0 +1,27 @@
+% Use with BibTool http://www.gerd-neugebauer.de/software/TeX/BibTool/index.en.html
+% We don't want to export these fields
+delete.field      = "annote"
+delete.field      = "file"
+delete.field      = "keywords"
+delete.field      = "abstract"
+delete.field      = "mendeley-tags"
+% Preserve key case, e.g., Fitts1954, not fitts1954
+preserve.key.case = on
+% No space between '{' and keys
+print.align.key   = 0
+% Two spaces for entry attributes
+print.indent      = 2
+% TODO
+print.align       = 0
+% Don't wrap lines
+print.line.length = 9999
+% Space before and after '='
+print.wide.equal  = on
+% TODO
+print.equal.right = off
+% Use spaces, not tabs
+print.use.tab     = off
+% Sort entries
+sort              = on
+% Use single brackets, not double for titles
+%rewrite.rule      { title # "^{{\(.*\)}}$" = "{\1}" }
